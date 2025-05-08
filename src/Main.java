@@ -39,9 +39,10 @@ public class Main {
         System.out.print("Word to guess: ");
         String word = scanner.nextLine();
         String[] correctLetters = word.split("");
-        System.out.println("How many guesses?");
-        int guessAmount = scanner.nextInt();
-        scanner.nextLine();//leftover line
+        //System.out.println("How many guesses?");
+        //int guessAmount = scanner.nextInt();
+        int guessAmount=6;
+        //scanner.nextLine();//leftover line
         //without checking word length nor if word is valid
         int j=0;
         boolean correct=false;
