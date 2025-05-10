@@ -1,4 +1,8 @@
-import java.util.Scanner;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
      // Naranjan ipinibida letri ya asmaute dauenin:
@@ -20,7 +24,7 @@ public class Main {
             int letterUntilIndex=0;
             if (index>0){
                 for (int j=0; j<index-1;j++){
-                    if(guess[j].equals(letter)){
+                    if((guess[j].equals(letter))&&(!word[j].equals(letter))){
                         letterUntilIndex++;
                     }
                 }
@@ -33,11 +37,55 @@ public class Main {
         }
         return allow;
     }
-
+    private static Set<String> loadDictionary(String filePath) {
+        Set<String> dictionary = new HashSet<>();
+        try {
+            // Leer todas las líneas del archivo y agregarlas al Set
+            dictionary.addAll(Files.readAllLines(Paths.get(filePath)));
+        } catch (IOException e) {
+            System.out.println("Error al cargar el diccionario: " + e.getMessage());
+        }
+        return dictionary;
+    }
     public static void main(String[] args) {
+        // Cargar el diccionario
+        Set<String> dictionary = loadDictionary("src/palabras_5_letras.txt");
+
+        if (dictionary.isEmpty()) {
+            System.out.println("El diccionario está vacío o no se pudo cargar.");
+            return;
+        }
+        Random random = new Random();
+        int numeroAleatorio = random.nextInt(10835);
+        List<String> dictionaryList = new ArrayList<>(dictionary);
+        String word = dictionaryList.get(numeroAleatorio - 1);
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Word to guess: ");
-        String word = scanner.nextLine();
+        /**
+         * boolean wordValid=false;
+         * String word="";
+         *         Scanner scanner = new Scanner(System.in);
+         *         while (!wordValid){
+         *         scanner = new Scanner(System.in);
+         *         System.out.print("Introduce una palabra: ");
+         *         word = scanner.nextLine().toLowerCase();
+         *         Random random = new Random();
+         *         int numeroAleatorio = random.nextInt(10835);
+         *             List<String> dictionaryList = new ArrayList<>(dictionary);
+         *             word = dictionaryList.get(numeroAleatorio - 1);
+         *         System.out.println(numeroAleatorio);
+         *         // Verificar si la palabra es válida
+         *         if (dictionary.contains(word)) {
+         *             System.out.println("La palabra es válida.");
+         *             wordValid=true;
+         *         } else {
+         *             System.out.println("La palabra no es válida.");
+         *         }
+         *         }
+         */
+
+
+
+
         String[] correctLetters = word.split("");
         //System.out.println("How many guesses?");
         //int guessAmount = scanner.nextInt();
@@ -47,8 +95,9 @@ public class Main {
         int j=0;
         boolean correct=false;
         while (j<guessAmount&&!correct){
-            System.out.print("Guess number "+(j+1)+":");
+            System.out.print("Intento número "+(j+1)+":");
             String guess = scanner.nextLine();
+            if (dictionary.contains(guess)) {
             String[] letters = guess.split("");
             for(int i=0; i<letters.length; i++){
                 if(correctLetters[i].equals(letters[i])){
@@ -72,11 +121,15 @@ public class Main {
                 correct=true;
             }
             j++;
-        }
+            }else{
+                System.out.println("La palabra no es válida");
+            }
+            }
         if(correct){
-            System.out.println("Congratulations!");
+            System.out.println("Felicidades!");
         }else{
-            System.out.println("Nice try!");
+            System.out.println("Buen intento!");
+            System.out.println("La palabra era: "+word);
         }
 
         //System.out.println("❌");  Red square 🟥
